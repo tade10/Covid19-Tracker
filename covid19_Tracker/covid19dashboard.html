@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+</!DOCTYPE html>
+<html>
+	<head>
+		<title>COVID-19 INDIA STATES</title>
+		<!-- CSS only -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+		<!-- JS, Popper.js, and jQuery -->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-md">
+					<div class="card text-white bg-warning mb-3" style="max-width: 18em">
+						<div class="card-header">Total Positive</div>
+						<div class="card-body">
+							<h5 class="card-title" id="total_positive"></h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-md">
+					<div class="card text-white bg-success mb-3" style="max-width: 18em">
+						<div class="card-header">Total Recovered</div>
+						<div class="card-body">
+							<h5 class="card-title" id="total_recovered"></h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-md">
+					<div class="card text-white bg-danger mb-3" style="max-width: 18em">
+						<div class="card-header">Total Deaths</div>
+						<div class="card-body">
+							<h5 class="card-title" id="total_deaths"></h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="table-responsive-md">
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">STATE</th>
+							<th scope="col">POSITIVE CASES</th>
+							<th scope="col">RECOVERED</th>
+							<th scope="col">DEATHS</th>
+						</tr>
+					</thead>
+					<tbody id="tabledata">
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div style="width: 500px;height: 500px">
+			<canvas id="myChart" width="400" height="400"></canvas>
+		</div>
+		
+<script>
+
+	var states=[];
+	var positivecases=[];
+	$(document).ready(function(){
+		$.ajax({
+			type:"GET",
+			url:"http://127.0.0.1:5000/getallstatesforcurrentdate",
+			success:function(data){
+
+				$.each(data,function(index,value){
+					positivecases.push(data[index].positive_cases);
+					states.push(data[index].state);
+					
+				});
+
+				console.log(positivecases);
+				console.log(states); 
+			}
+		});
+	});
+
+	$(document).ready(function(){
+		$.ajax({
+			type:"GET",
+			url:"http://127.0.0.1:5000/getallstatesforcurrentdate",
+			success:function(data){
+
+				$.each(data,function(index,value){
+					var tablerow="<tr><td>"+data[index].state+"</td><td>"+data[index].positive_cases+"</td><td>"+data[index].recovered+"</td><td>"+data[index].deaths+"</td></tr>";
+					$("#tabledata").append(tablerow);
+				});
+
+				console.log(positivecases);
+				console.log(states); 
+			}
+		});
+	});
+
+	$(document).ready(function(){
+		$.ajax({
+			type:"GET",
+			url:"http://127.0.0.1:5000/totalcases",
+			success:function(data){
+				$("#total_positive").text(data.total_positive);
+				$("#total_recovered").text(data.total_recovered);
+				$("#total_deaths").text(data.total_deaths);
+			}
+		});
+	});
+
+
+
+
+
+
+
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+        labels: states,
+        datasets: [{
+            label: 'Covid 19 state wise data',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: positivecases
+            
+        }]
+    },
+    options: {
+        
+    }
+});
+</script>
+	</body>
+</html>
